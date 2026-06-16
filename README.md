@@ -1,23 +1,30 @@
 # CS50-YouTube-Redirect
 
+
+
 <p>
   <a href="https://github.com/AnicSuny/CS50-YouTube-Redirect/releases">
-    <img alt="Version" src="https://img.shields.io/badge/version-1.1.0-8A2BE2?style=for-the-badge&logo=github">
+    <img alt="Version" src="https://img.shields.io/badge/version-1.1.0-8A2BE2?style=plastic&logo=github">
   </a>
   <a href="https://raw.githubusercontent.com/AnicSuny/CS50-YouTube-Redirect/main/CS50-YouTube-Redirect.user.js">
-    <img alt="Install" src="https://img.shields.io/badge/install-userscript-2ea44f?style=for-the-badge&logo=tampermonkey&logoColor=white">
+    <img alt="Install" src="https://img.shields.io/badge/install-userscript-2ea44f?style=plastic&logo=tampermonkey&logoColor=white">
   </a>
   <a href="https://cs50.harvard.edu/x/">
-    <img alt="CS50x" src="https://img.shields.io/badge/CS50x-supported-A51C30?style=for-the-badge">
+    <img alt="CS50x" src="https://img.shields.io/badge/CS50x-supported-A51C30?style=plastic">
   </a>
   <a href="https://www.tampermonkey.net/">
-    <img alt="Tampermonkey" src="https://img.shields.io/badge/Tampermonkey-compatible-00485B?style=for-the-badge">
+    <img alt="Tampermonkey" src="https://img.shields.io/badge/Tampermonkey-compatible-00485B?style=plastic">
   </a>
   <a href="./LICENSE">
-    <img alt="License" src="https://img.shields.io/badge/license-MIT-blue?style=for-the-badge">
+    <img alt="License" src="https://img.shields.io/badge/license-MIT-blue?style=plastic">
   </a>
 </p>
-English | [中文](./README-zh-CN.md)
+
+<p>
+  <a href="./README.md">English</a> | <a href="./README-zh-CN.md">中文</a>
+</p>
+
+---
 
 A Tampermonkey userscript that opens CS50x section and shorts videos directly on YouTube.
 
