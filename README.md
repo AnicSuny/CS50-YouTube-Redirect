@@ -1,10 +1,12 @@
 # CS50-YouTube-Redirect
 
-
+<p>
+  English | <a href="./README-zh-CN.md">中文</a>
+</p>
 
 <p>
   <a href="https://github.com/AnicSuny/CS50-YouTube-Redirect/releases">
-    <img alt="Version" src="https://img.shields.io/badge/version-1.1.0-8A2BE2?style=plastic&logo=github">
+    <img alt="Version" src="https://img.shields.io/badge/version-1.2.0-8A2BE2?style=plastic&logo=github">
   </a>
   <a href="https://raw.githubusercontent.com/AnicSuny/CS50-YouTube-Redirect/main/CS50-YouTube-Redirect.user.js">
     <img alt="Install" src="https://img.shields.io/badge/install-userscript-2ea44f?style=plastic&logo=tampermonkey&logoColor=white">
@@ -20,45 +22,60 @@
   </a>
 </p>
 
-<p>
-  <a href="./README.md">English</a> | <a href="./README-zh-CN.md">中文</a>
-</p>
+A Tampermonkey userscript that shows a quick resource panel for CS50x section and shorts pages.
 
----
-
-A Tampermonkey userscript that opens CS50x section and shorts videos directly on YouTube.
-
-When browsing CS50x, section and shorts videos are usually embedded inside the CS50 website. This script lets you **normal left-click a CS50 section or shorts link and open the corresponding YouTube video directly in a new tab**.
+When browsing CS50x, section and shorts pages often provide related resources such as slides, subtitles, transcripts, and YouTube videos. This script lets you **hover over a supported CS50x section or shorts link, press `Alt`, and quickly open the related resources in new tabs**.
 
 ## Preview
 
 ```text
-Normal left-click:
-
-https://cs50.harvard.edu/x/shorts/structures/
+Hover a CS50x section or shorts link
         ↓
-https://www.youtube.com/watch?v=...
+Press Alt
+        ↓
+CS50 Resources panel appears
+        ↓
+Open Slides / Subtitles / Transcript / YouTube
 ```
 
-If you want to open the original CS50 page for slides, subtitles, transcripts, or other course resources, use `Ctrl + Click`, `Cmd + Click`, middle click, or right-click open in new tab.
+Example supported link:
+
+```text
+https://cs50.harvard.edu/x/shorts/structures/
+```
+
+The resource panel may show:
+
+```text
+Slides
+Subtitles
+Transcript
+YouTube
+```
+
+Resources are displayed in the same order as they appear on the original CS50 page.
 
 ## Features
 
-- Redirects CS50x section and shorts links to YouTube.
+- Shows a resource panel for CS50x section and shorts links.
 - Works only on `https://cs50.harvard.edu/x/*`.
-- Handles normal left-clicks only.
-- Preserves default browser behavior for:
-  - `Ctrl + Click`
-  - `Cmd + Click`
-  - `Shift + Click`
-  - `Alt + Click`
-  - middle click
-  - right click → open in new tab
-- Reads YouTube links from the CS50 page content area.
+- Supports:
+  - `https://cs50.harvard.edu/x/sections/...`
+  - `https://cs50.harvard.edu/x/shorts/...`
+- Triggered by hovering a supported link and then pressing `Alt`.
+- Opens selected resources in new tabs.
+- Extracts only the following resources:
+  - Slides
+  - Subtitles
+  - Transcript
+  - YouTube
+- Displays resources in the original order from the CS50 page.
+- Shows missing resources as `Not found`.
 - Avoids scanning sidebar, header, footer, and navigation areas.
-- Falls back to opening the original CS50 page if no YouTube link is found.
 - Normalizes supported YouTube URLs to `https://www.youtube.com/watch?v=...`.
-- Shows a small loading page while resolving the target video.
+- Uses in-memory caching to avoid repeated requests.
+- Provides a `Refresh` button to reload resources for the current link.
+- Preserves normal browser behavior for regular clicks, modifier clicks, middle clicks, and right-click actions.
 
 ## Installation
 
@@ -73,7 +90,7 @@ https://raw.githubusercontent.com/AnicSuny/CS50-YouTube-Redirect/main/CS50-YouTu
 
 3. Tampermonkey should detect the userscript automatically.
 4. Click **Install**.
-5. Visit [CS50x](https://cs50.harvard.edu/x/) and normal left-click a section or shorts link.
+5. Visit [CS50x](https://cs50.harvard.edu/x/).
 
 ### Manual Installation
 
@@ -82,6 +99,20 @@ https://raw.githubusercontent.com/AnicSuny/CS50-YouTube-Redirect/main/CS50-YouTu
 3. Create a new userscript.
 4. Paste the contents of `CS50-YouTube-Redirect.user.js`.
 5. Save the script.
+
+## Usage
+
+1. Visit a CS50x page.
+2. Move your mouse over a supported section or shorts link.
+3. Press `Alt`.
+4. A resource panel will appear.
+5. Click a resource to open it in a new tab.
+
+```text
+Hover link → Press Alt → Choose resource
+```
+
+The `Alt` key is only used to trigger the panel. After the panel appears, you can release `Alt`. The panel remains visible until your mouse leaves both the original link and the panel.
 
 ## Supported Links
 
@@ -111,14 +142,22 @@ Support for additional CS50 course paths may be added later if needed.
 
 ## Behavior
 
-### Normal Left-Click
+### Normal Clicks
 
-When you normal left-click a supported CS50x section or shorts link, the script:
+The script does not intercept normal clicks.
 
-1. Opens a new tab immediately.
-2. Fetches the target CS50 page.
-3. Finds the official YouTube link in the page content.
-4. Redirects the new tab to the YouTube video.
+When you normal left-click a supported CS50x section or shorts link, the browser opens the original CS50 page as usual.
+
+### Resource Panel
+
+When you hover over a supported link and press `Alt`, the script:
+
+1. Fetches the target CS50 page.
+2. Parses the page HTML.
+3. Searches the main content area.
+4. Extracts supported resource links.
+5. Displays them in a floating resource panel.
+6. Opens the selected resource in a new tab.
 
 ### Modifier Clicks and Manual Opening
 
@@ -130,37 +169,55 @@ Cmd + Click
 Shift + Click
 Alt + Click
 middle click
-right click → open link in new tab
+right click → open in new tab
 ```
 
-Use these actions when you want to open the original CS50 page to view slides, subtitles, transcripts, source code, or other course resources.
+Use these actions normally when you want the browser's default behavior.
 
-## How It Works
+## Resource Types
 
-The script listens for click events on CS50x pages.
+The script only extracts these resources:
 
-When a supported link is clicked, it:
+```text
+Slides
+Subtitles
+Transcript
+YouTube
+```
 
-1. Checks whether the clicked link points to a CS50x `sections` or `shorts` page.
-2. Ignores the click if modifier keys are used.
-3. Opens a blank new tab immediately to avoid popup blocking.
-4. Fetches the target CS50 page.
-5. Parses the page HTML.
-6. Searches the main content area for a YouTube link.
-7. Redirects the new tab to the resolved YouTube video.
-8. Falls back to the original CS50 page if resolution fails.
+Resources are shown in the same order as they appear on the original CS50 page.
+
+If a resource is missing from the page, the panel displays it under:
+
+```text
+Not found
+```
+
+The script does not try to guess missing resource URLs and does not fetch missing resources separately.
 
 ## Link Resolution Strategy
 
-The script prioritizes YouTube links in this order:
+The script scans only the main content area of the target CS50 page.
 
-1. A YouTube link in the main content area whose text is exactly `YouTube`.
-2. A YouTube link in the main content area whose text contains `YouTube`.
-3. The first YouTube link found in the main content area.
-4. A YouTube iframe source as a fallback.
-5. The original CS50 page if no YouTube URL is found.
+It ignores:
 
-Navigation, sidebar, header, and footer areas are ignored.
+```text
+nav
+aside
+header
+footer
+```
+
+The script looks for links whose text matches one of:
+
+```text
+Slides
+Subtitles
+Transcript
+YouTube
+```
+
+For YouTube links, supported URL formats are normalized.
 
 ## YouTube URL Normalization
 
@@ -181,14 +238,27 @@ https://www.youtube.com/watch?v=VIDEO_ID
 
 Already valid `youtube.com/watch?v=...` links are preserved in standard watch URL form.
 
+## Caching
+
+The script uses in-memory caching for resolved resources.
+
+This means:
+
+- Resource data is cached only in the current page session.
+- Refreshing the CS50 page clears the cache.
+- Closing the tab clears the cache.
+- No cache is stored in `localStorage` or sent anywhere.
+
+The resource panel includes a `Refresh` button. Clicking it clears the cache for the current hovered link and fetches the target CS50 page again.
+
 ## Userscript Metadata
 
 ```javascript
 // ==UserScript==
 // @name         CS50-YouTube-Redirect
 // @namespace    https://cs50.harvard.edu/
-// @version      1.1.0
-// @description  Open CS50x sections/shorts links directly in YouTube when left-clicked.
+// @version      1.2.0
+// @description  Show CS50x section/shorts resources in a hover panel and open them in new tabs.
 // @match        https://cs50.harvard.edu/x/*
 // @icon         https://cs50.harvard.edu/favicon.ico
 // @grant        none
@@ -211,9 +281,10 @@ It should also work with other userscript managers that support standard userscr
 ## Limitations
 
 - Only supports `https://cs50.harvard.edu/x/*`.
-- Only redirects when clicking links from CS50x pages.
-- Does not automatically redirect when directly visiting a section or shorts page.
-- Depends on CS50 pages exposing a YouTube link or YouTube iframe in the page content.
+- Only handles section and shorts links under CS50x.
+- Does not support other CS50 course paths yet.
+- Depends on CS50 pages exposing supported resource links in the page content.
+- Does not guess or construct missing resource URLs.
 - If CS50 significantly changes its page structure, the selector logic may need to be updated.
 
 ## Privacy
@@ -223,8 +294,9 @@ This script:
 - Does not collect data.
 - Does not track users.
 - Does not send data to third-party servers.
-- Only fetches CS50 target pages that you click.
+- Only fetches CS50 target pages that you hover and trigger.
 - Only runs on `https://cs50.harvard.edu/x/*`.
+- Stores resource cache only in memory for the current page session.
 
 ## License
 
